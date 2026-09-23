@@ -1,0 +1,238 @@
+/* ============================================================
+   QCU TFP APS — feuille de style minimaliste
+   ============================================================ */
+:root{
+  --bg:#f6f7f9;
+  --surface:#ffffff;
+  --ink:#14181f;
+  --ink-soft:#5b6470;
+  --line:#e4e7ec;
+  --accent:#1f4fd8;
+  --accent-soft:#eaf0ff;
+  --ok:#1a7f4b;
+  --ok-soft:#e6f5ec;
+  --ko:#c33232;
+  --ko-soft:#fbeaea;
+  --warn:#b7791f;
+  --radius:14px;
+  --shadow:0 1px 2px rgba(20,24,31,.04), 0 8px 28px rgba(20,24,31,.06);
+  --font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px;margin:0 auto;padding:24px 20px 80px}
+.hidden{display:none !important}
+
+/* ---- header ---- */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  max-width:760px;margin:0 auto;padding:20px 20px 0;
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.02em}
+.brand .logo{
+  width:30px;height:30px;border-radius:8px;background:var(--accent);
+  color:#fff;display:grid;place-items:center;font-size:14px;font-weight:800;
+}
+.brand small{display:block;font-weight:500;color:var(--ink-soft);font-size:12px;letter-spacing:0}
+.ghost-link{color:var(--ink-soft);font-size:13px;text-decoration:none}
+.ghost-link:hover{color:var(--accent)}
+
+/* ---- cards / sections ---- */
+.card{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;
+}
+h1{font-size:24px;letter-spacing:-.02em;margin:0 0 4px}
+h2{font-size:16px;letter-spacing:-.01em;margin:0 0 14px}
+.subtitle{color:var(--ink-soft);margin:0 0 24px;font-size:14px}
+.field{margin-bottom:22px}
+.field > label{display:block;font-weight:600;font-size:14px;margin-bottom:10px}
+.hint{color:var(--ink-soft);font-size:12.5px;margin-top:6px}
+
+/* ---- chips (UV / difficulté) ---- */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  border:1px solid var(--line);background:#fff;border-radius:999px;
+  padding:8px 14px;font-size:13px;cursor:pointer;user-select:none;
+  transition:.12s;color:var(--ink);
+}
+.chip:hover{border-color:#c9cfd8}
+.chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.chip .n{opacity:.6;font-weight:500;margin-left:4px}
+
+/* ---- segmented (difficulté / longueur) ---- */
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.seg button{
+  border:0;background:transparent;padding:9px 16px;font-size:13.5px;cursor:pointer;
+  color:var(--ink-soft);font-family:inherit;
+}
+.seg button.on{background:var(--accent);color:#fff;font-weight:600}
+
+/* ---- buttons ---- */
+.btn{
+  border:0;border-radius:11px;padding:13px 20px;font-size:15px;font-weight:600;
+  cursor:pointer;font-family:inherit;transition:.12s;
+}
+.btn-primary{background:var(--accent);color:#fff;width:100%}
+.btn-primary:hover{filter:brightness(1.06)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.btn-ghost:hover{border-color:#c9cfd8}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+
+/* ---- quiz ---- */
+.quiz-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.counter{font-weight:700;font-size:15px}
+.counter small{color:var(--ink-soft);font-weight:500}
+.uv-tag{font-size:12px;color:var(--accent);background:var(--accent-soft);
+  padding:3px 10px;border-radius:999px;font-weight:600}
+
+/* timer ring */
+.timer{display:flex;align-items:center;gap:10px}
+.ring{position:relative;width:44px;height:44px}
+.ring svg{transform:rotate(-90deg)}
+.ring .track{stroke:var(--line)}
+.ring .bar{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .3s}
+.ring .num{position:absolute;inset:0;display:grid;place-items:center;font-size:14px;font-weight:700}
+.timer.low .bar{stroke:var(--ko)}
+.timer.low .num{color:var(--ko)}
+
+.progress{height:4px;background:var(--line);border-radius:999px;overflow:hidden;margin-bottom:22px}
+.progress .fill{height:100%;background:var(--accent);width:0;transition:width .3s}
+
+.question{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:0 0 20px}
+
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{
+  display:flex;gap:12px;align-items:flex-start;text-align:left;
+  border:1.5px solid var(--line);background:#fff;border-radius:12px;
+  padding:14px 16px;font-size:15px;cursor:pointer;font-family:inherit;color:var(--ink);
+  transition:.12s;width:100%;
+}
+.opt:hover:not(:disabled){border-color:#b9c1cd;background:#fcfcfd}
+.opt .mark{
+  flex:0 0 24px;height:24px;border-radius:50%;border:1.5px solid var(--line);
+  display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--ink-soft);
+}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.sel .mark{border-color:var(--accent);background:var(--accent);color:#fff}
+.opt.correct{border-color:var(--ok);background:var(--ok-soft)}
+.opt.correct .mark{border-color:var(--ok);background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--ko);background:var(--ko-soft)}
+.opt.wrong .mark{border-color:var(--ko);background:var(--ko);color:#fff}
+.opt:disabled{cursor:default}
+
+.explain{
+  margin-top:16px;border-left:3px solid var(--accent);background:var(--accent-soft);
+  padding:12px 16px;border-radius:0 10px 10px 0;font-size:14px;
+}
+.explain b{color:var(--accent)}
+
+.quiz-foot{margin-top:22px;display:flex;justify-content:flex-end}
+
+/* ---- results ---- */
+.score-big{font-size:44px;font-weight:800;letter-spacing:-.03em}
+.score-sub{color:var(--ink-soft);margin-bottom:20px}
+/* récap par module */
+.mod{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;
+  padding:12px 16px;margin-bottom:8px;font-size:14px}
+.mod .mod-uv{font-weight:700;min-width:52px}
+.mod .mod-name{flex:1;color:var(--ink-soft)}
+.mod .mod-score{font-weight:600}
+.mod .mod-badge{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.mod.ok{border-color:var(--ok)}
+.mod.ok .mod-badge{background:var(--ok-soft);color:var(--ok)}
+.mod.ko{border-color:var(--ko)}
+.mod.ko .mod-badge{background:var(--ko-soft);color:var(--ko)}
+
+.rev-item{border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px}
+.rev-q{font-weight:600;margin-bottom:8px}
+.rev-line{font-size:14px;padding:3px 0}
+.rev-line.ok{color:var(--ok)}
+.rev-line.ko{color:var(--ko)}
+
+/* ---- admin ---- */
+.admin-opt{display:flex;gap:10px;align-items:center;padding:8px 12px;border:1px solid var(--line);
+  border-radius:10px;margin-bottom:8px;cursor:pointer;font-size:14px}
+.admin-opt.proposed{border-color:var(--accent);background:var(--accent-soft)}
+.admin-opt.chosen{border-color:var(--ok);background:var(--ok-soft);font-weight:600}
+.badge{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--line);color:var(--ink-soft)}
+.badge.prop{background:var(--accent-soft);color:var(--accent)}
+textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-family:inherit;font-size:14px;resize:vertical}
+
+/* ---- exam intro ---- */
+.exam-note{border:1px solid var(--line);background:#fbfbfc;border-radius:12px;padding:18px 20px;margin-bottom:22px}
+.exam-note h2{margin:0 0 10px}
+.exam-note p{margin:0 0 10px;font-size:14.5px;color:var(--ink)}
+.exam-note ul{margin:0 0 12px;padding-left:18px}
+.exam-note li{font-size:14px;margin-bottom:5px}
+
+/* ---- auto-advance hint ---- */
+.next-hint{margin-top:16px;text-align:center;color:var(--ink-soft);font-size:13px;cursor:pointer;user-select:none}
+.next-hint b{color:var(--accent)}
+
+/* le bloc d'impression est invisible à l'écran, visible seulement à l'impression */
+#print-block{display:none}
+
+/* ============================================================
+   RESPONSIVE MOBILE
+   ============================================================ */
+.seg{max-width:100%;flex-wrap:wrap}
+@media (max-width:600px){
+  .topbar{padding:16px 14px 0;gap:10px}
+  .wrap{padding:16px 14px 64px}
+  .card{padding:18px 15px}
+  h1{font-size:21px}
+  .subtitle{font-size:13px;margin-bottom:18px}
+  h2{font-size:15px}
+  .field{margin-bottom:18px}
+  .brand small{font-size:11px}
+  .brand .logo{width:28px;height:28px}
+  .seg button{padding:9px 11px;font-size:12.5px}
+  .chip{padding:7px 11px;font-size:12.5px}
+  .question{font-size:17px}
+  .opt{font-size:14.5px;padding:12px 13px}
+  .opt .mark{flex-basis:22px;height:22px;font-size:11px}
+  .quiz-head{flex-wrap:wrap;gap:10px}
+  .counter{font-size:14px}
+  .uv-tag{font-size:11px;padding:3px 9px}
+  .ring,.ring svg{width:38px;height:38px}
+  .explain{font-size:13.5px}
+  .score-big{font-size:34px}
+  .btn{padding:12px 16px;font-size:14.5px}
+  .btn-row{flex-direction:column}
+  .btn-row .btn{width:100%}
+  #btn-next{width:100% !important}
+  .exam-note{padding:15px 14px}
+}
+
+/* ---- footer note ---- */
+.foot-note{text-align:center;color:var(--ink-soft);font-size:12px;margin-top:24px}
+
+/* ============================================================
+   IMPRESSION / EXPORT PDF
+   ============================================================ */
+@media print{
+  @page{margin:16mm}
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+  body{background:#fff}
+  .topbar,.no-print,.btn,.quiz-foot,.progress,.timer{display:none !important}
+  .card{box-shadow:none;border:none;padding:0}
+  .wrap{max-width:none;padding:0}
+  #review-list{display:none !important}   /* à l'impression : seulement le corrigé */
+  #print-block{display:block !important}
+  .print-q{break-inside:avoid;margin-bottom:18px}
+  .print-q h3{font-size:14px;margin:0 0 6px;color:#000}
+  .print-opt{font-size:13px;padding:2px 0;color:#333}
+  .print-opt.correct{font-weight:700;color:#1a7f4b}   /* juste : vert */
+  .print-opt.correct::after{content:"  ✓ bonne réponse"}
+  .print-opt.wrong{font-weight:700;color:#c33232}      /* faux : rouge */
+  .print-opt.wrong::after{content:"  ✗ ta réponse"}
+}

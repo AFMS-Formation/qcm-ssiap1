@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QCM SSIAP 1 — Console formateur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .adminbar{position:sticky;top:0;z-index:5;background:var(--bg);padding:16px 20px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .prog-wrap{flex:1;min-width:200px}
+  .prog-bar{height:6px;background:var(--line);border-radius:999px;overflow:hidden}
+  .prog-bar .f{height:100%;background:var(--ok);width:0;transition:width .2s}
+  .kbd{font-size:11px;background:var(--line);border-radius:5px;padding:1px 6px;color:var(--ink-soft)}
+  .metaline{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:16px 0}
+  .metaline select,.metaline input{border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-family:inherit;font-size:13.5px}
+  .src{font-size:11px;color:var(--ink-soft)}
+  .jump{display:flex;gap:8px;align-items:center}
+  /* barre de recherche */
+  .search-wrap{position:relative;flex:1;min-width:220px;display:flex;align-items:center}
+  .search-ico{position:absolute;left:12px;width:15px;height:15px;color:var(--ink-soft);pointer-events:none}
+  #search{width:100%;box-sizing:border-box;border:1px solid var(--line);background:var(--surface);
+    border-radius:10px;padding:9px 58px 9px 34px;font-family:inherit;font-size:13.5px;color:var(--ink);
+    outline:none;transition:border-color .12s, box-shadow .12s;-webkit-appearance:none}
+  #search::placeholder{color:var(--ink-soft)}
+  #search:hover{border-color:#c9cfd8}
+  #search:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  #search:focus + #search-count{color:var(--accent)}
+  #search-count{position:absolute;right:12px;font-size:11.5px;color:var(--ink-soft);
+    pointer-events:none;font-variant-numeric:tabular-nums}
+  /* bandeau doublons */
+  #dup-banner{margin:10px 0 4px}
+  .dup-box{border:1px solid var(--warn);background:#fff8ec;border-radius:10px;padding:10px 12px;font-size:13px}
+  .dup-box .dup-h{font-weight:700;color:var(--warn);margin-bottom:6px}
+  .dup-row{display:flex;align-items:center;gap:8px;padding:3px 0}
+  .dup-row .dup-txt{flex:1;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dup-row button{border:1px solid var(--line);background:#fff;border-radius:7px;padding:3px 9px;font-size:12px;cursor:pointer;font-family:inherit}
+  .dup-row .dup-del{color:var(--ko);border-color:#f0c9c9}
+  .dup-row .dup-go{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="adminbar no-print">
+  <div class="brand"><span class="logo" style="background:var(--ok)">✓</span>
+    <div>Validation des réponses<small>Console formateur — ne pas publier</small></div></div>
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="f" id="prog"></div></div>
+    <div class="src" id="prog-txt" style="margin-top:4px"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-ghost" id="btn-new" style="padding:9px 14px;font-size:13px">＋ Nouvelle question</button>
+    <button class="btn btn-ghost" id="btn-export" style="padding:9px 14px;font-size:13px">Exporter answers.js</button>
+    <button class="btn btn-ghost" id="btn-reload" style="padding:9px 14px;font-size:13px" title="Recharge les données depuis le fichier answers.js publié (vide le cache local de ce navigateur)">🔄 Recharger depuis le fichier</button>
+  </div>
+</div>
+
+<main class="wrap">
+  <div style="text-align:center;margin:4px 0 16px">
+    <a href="https://www.afms-formation.fr/" target="_blank" rel="noopener" title="AFMS Formation — site officiel" aria-label="AFMS Formation — site officiel">
+      <img src="https://www.afms-formation.fr/assets/img/logo-afms.png" alt="AFMS Formation" style="height:120px;width:auto;display:inline-block">
+    </a>
+  </div>
+  <div id="access-codes" style="background:var(--accent-soft);border:1px solid #cdd9fb;border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:13.5px;display:none">
+    <b style="color:var(--accent)">🔑 Accès apprenants</b>
+    <span style="color:var(--ink-soft)">— génère un lien à envoyer à tes apprenants (valable <span id="access-days">26</span> jours).</span>
+    <div style="margin-top:8px">
+      <button id="gen-access" class="btn btn-ghost" style="padding:6px 12px;font-size:13px">Générer un lien d'accès</button>
+    </div>
+    <div id="access-out" style="display:none;margin-top:10px">
+      <input id="access-link" readonly onclick="this.select()"
+        style="width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12.5px;background:#fff">
+      <div style="margin-top:6px;display:flex;align-items:center;gap:10px">
+        <button id="copy-link" class="btn btn-ghost" style="padding:5px 12px;font-size:12.5px">Copier le lien</button>
+        <span id="copied-link" style="color:var(--ok);font-size:12.5px;display:none">Copié ✓</span>
+        <span id="access-exp" style="color:var(--ink-soft);font-size:12.5px"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="jump" style="margin-bottom:14px;flex-wrap:wrap">
+    <button class="btn btn-ghost" id="prev" style="padding:8px 14px" title="Question précédente (←)">←</button>
+    <input id="goto" type="number" min="1" style="width:70px;border:1px solid var(--line);border-radius:9px;padding:8px" />
+    <button class="btn btn-ghost" id="next" style="padding:8px 14px" title="Question suivante (→)">→</button>
+    <div class="search-wrap">
+      <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input id="search" type="text" placeholder="Rechercher une question…"
+        title="Tape des mots-clés — Entrée passe au résultat suivant" autocomplete="off" />
+      <span id="search-count"></span>
+    </div>
+    <label style="font-size:13px;color:var(--ink-soft)">
+      <input type="checkbox" id="only-flagged"> ⚠ à confirmer</label>
+    <label style="font-size:13px;color:var(--ink-soft)">
+      <input type="checkbox" id="only-deleted"> 🗑 supprimées</label>
+  </div>
+
+  <section class="card">
+    <div class="src" id="q-src"></div>
+    <label style="font-size:12px;color:var(--ink-soft)">Intitulé (éditable — corrige l'orthographe ici)</label>
+    <div id="q-text" class="question" contenteditable="true" spellcheck="true"
+         style="margin:4px 0 16px;border:1px dashed var(--line);border-radius:8px;padding:8px 10px;outline:none">…</div>
+    <div style="font-size:12px;color:var(--ink-soft);margin-bottom:6px">Coche <b>toutes</b> les bonnes réponses (clic pour (dé)cocher).</div>
+    <div id="q-options"></div>
+
+    <div class="metaline">
+      <button class="btn btn-ghost" id="reset-text" style="padding:6px 10px;font-size:12px;margin-left:auto">Rétablir le texte d'origine</button>
+      <button class="btn btn-ghost" id="btn-del" style="padding:6px 10px;font-size:12px;color:var(--ko);display:none">Supprimer</button>
+      <button class="btn btn-ghost" id="btn-restore" style="padding:6px 10px;font-size:12px;color:var(--ok);display:none">↩ Restaurer</button>
+    </div>
+
+    <div class="field" style="margin:0">
+      <label style="font-size:13px">Justification / correction (affichée à l'élève)</label>
+      <textarea id="just" rows="3" placeholder="Pourquoi ces réponses sont les bonnes (réf. réglementation SSIAP)…"></textarea>
+    </div>
+  </section>
+
+  <p class="foot-note">Raccourcis : <span class="kbd">1</span>–<span class="kbd">8</span> (dé)cocher une réponse ·
+    <span class="kbd">←</span>/<span class="kbd">→</span> naviguer. Clique une option pour la marquer bonne,
+    double-clique son texte pour le corriger. Sauvegarde automatique.</p>
+</main>
+
+<div id="gate" style="position:fixed;inset:0;background:var(--bg);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px">
+  <form id="gate-form" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:28px;max-width:340px;width:100%;box-shadow:var(--shadow)">
+    <div style="font-weight:700;margin-bottom:6px">🔒 Console formateur</div>
+    <div style="color:var(--ink-soft);font-size:13px;margin-bottom:16px">Accès réservé — entre le mot de passe.</div>
+    <input id="gate-pass" type="password" placeholder="Mot de passe" autocomplete="current-password"
+      style="width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit">
+    <div id="gate-err" style="color:var(--ko);font-size:12.5px;margin-top:8px;display:none">Mot de passe incorrect.</div>
+    <button class="btn btn-primary" type="submit" style="width:100%;margin-top:14px">Entrer</button>
+  </form>
+</div>
+
+<script src="questions.js"></script>
+<script src="answers.js"></script>
+<script src="admin-config.js"></script>
+<script src="access-config.js"></script>
+<script src="access.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

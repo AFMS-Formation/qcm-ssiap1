@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changer le mot de passe formateur</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:"Inter",system-ui,sans-serif;background:#f6f7f9;color:#14181f;margin:0;
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .card{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:28px;max-width:460px;width:100%;
+    box-shadow:0 8px 28px rgba(20,24,31,.06)}
+  h1{font-size:19px;margin:0 0 6px}
+  p{color:#5b6470;font-size:14px;margin:0 0 18px}
+  label{font-weight:600;font-size:13px;display:block;margin-bottom:6px}
+  input{width:100%;box-sizing:border-box;border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;
+    font-size:14px;font-family:inherit}
+  button{margin-top:14px;width:100%;border:0;border-radius:11px;background:#1f4fd8;color:#fff;
+    padding:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+  .out{margin-top:18px;display:none}
+  .out label{margin-bottom:8px}
+  textarea{width:100%;box-sizing:border-box;border:1px solid #e4e7ec;border-radius:10px;padding:10px;
+    font-family:ui-monospace,Menlo,monospace;font-size:12.5px;height:70px;resize:none;background:#fbfbfc}
+  .hint{font-size:12.5px;color:#5b6470;margin-top:8px}
+  .copied{color:#1a7f4b;font-size:12.5px;margin-top:6px;display:none}
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Changer le mot de passe de la console</h1>
+    <p>Tape le mot de passe que tu veux, puis copie la ligne obtenue dans le fichier
+       <code>admin-config.js</code> (sur GitHub) et republie.</p>
+    <label for="pw">Nouveau mot de passe</label>
+    <input id="pw" type="text" placeholder="ex. MonMotDePasse2026" autocomplete="off">
+    <button id="go">Générer la ligne à coller</button>
+
+    <div class="out" id="out">
+      <label>Ligne à coller dans <code>admin-config.js</code> :</label>
+      <textarea id="line" readonly></textarea>
+      <button id="copy" style="background:#fff;color:#14181f;border:1px solid #e4e7ec">Copier</button>
+      <div class="copied" id="copied">Copié ✓</div>
+      <div class="hint">Remplace la ligne <code>window.QCU_ADMIN_HASH = "…";</code> existante par celle-ci,
+        puis dépose <code>admin-config.js</code> sur GitHub (dossier <code>AFMS/app</code>).</div>
+    </div>
+  </div>
+<script>
+async function sha256(s){
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+document.getElementById('go').onclick = async () => {
+  const pw = document.getElementById('pw').value;
+  if(!pw){ return; }
+  const h = await sha256(pw);
+  document.getElementById('line').value = 'window.QCU_ADMIN_HASH = "'+h+'";';
+  document.getElementById('out').style.display = 'block';
+  document.getElementById('copied').style.display = 'none';
+};
+document.getElementById('copy').onclick = () => {
+  const ta = document.getElementById('line'); ta.select();
+  navigator.clipboard.writeText(ta.value).then(()=>{ document.getElementById('copied').style.display='block'; });
+};
+</script>
+</body>
+</html>

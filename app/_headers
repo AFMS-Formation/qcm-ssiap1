@@ -1,0 +1,9 @@
+# Cloudflare Pages : données toujours re-téléchargées (jamais de copie en cache).
+# « no-store » = le navigateur ne garde AUCUNE copie -> les mises à jour d'answers.js
+# sont vues immédiatement par les apprenants au rechargement de la page (mobile inclus).
+/answers.js
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Pragma: no-cache
+/questions.js
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Pragma: no-cache
