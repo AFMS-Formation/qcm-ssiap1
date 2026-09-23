@@ -17,8 +17,8 @@ d'une banque de questions issue des supports de formation AFMS.
 
 | | Lien | Pour qui |
 |---|---|---|
-| **Quiz** | _(à compléter après mise en ligne, ex. https://qcm-ssiap1.pages.dev)_ | Les candidats / apprenants |
-| **Console formateur** | _(même URL)_ `/admin.html` | Le formateur (réponses + liens d'accès) |
+| **Quiz** | https://qcm-ssiap1.pages.dev | Les candidats / apprenants (**accès via un lien** généré par le formateur) |
+| **Console formateur** | https://qcm-ssiap1.pages.dev/admin.html | Le formateur (réponses + génération des liens d'accès) |
 
 ## ✨ Ce que fait l'app
 
