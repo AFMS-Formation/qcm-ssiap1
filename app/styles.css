@@ -14,6 +14,7 @@
   --ko:#c33232;
   --ko-soft:#fbeaea;
   --warn:#b7791f;
+  --warn-soft:#fdf3e3;
   --radius:14px;
   --shadow:0 1px 2px rgba(20,24,31,.04), 0 8px 28px rgba(20,24,31,.06);
   --font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -127,7 +128,17 @@ h2{font-size:16px;letter-spacing:-.01em;margin:0 0 14px}
 .opt.correct .mark{border-color:var(--ok);background:var(--ok);color:#fff}
 .opt.wrong{border-color:var(--ko);background:var(--ko-soft)}
 .opt.wrong .mark{border-color:var(--ko);background:var(--ko);color:#fff}
+/* réponse correcte que l'utilisateur a OUBLIÉ de cocher : style distinct (ni vert « validé », ni rouge « erreur ») */
+.opt.missed{border-color:var(--warn);border-style:dashed;background:var(--warn-soft)}
+.opt.missed .mark{border-color:var(--warn);background:var(--warn);color:#fff}
+.opt.missed span:not(.mark):not(.opt-tag){opacity:.85}
 .opt:disabled{cursor:default}
+/* étiquette à droite d'une option corrigée */
+.opt-tag{margin-left:auto;flex:0 0 auto;align-self:center;font-size:11.5px;font-weight:700;
+  padding:3px 9px;border-radius:999px;white-space:nowrap}
+.opt-tag.ok{background:var(--ok-soft);color:var(--ok)}
+.opt-tag.ko{background:var(--ko-soft);color:var(--ko)}
+.opt-tag.missed{background:var(--warn);color:#fff}
 
 .explain{
   margin-top:16px;border-left:3px solid var(--accent);background:var(--accent-soft);
@@ -157,6 +168,7 @@ h2{font-size:16px;letter-spacing:-.01em;margin:0 0 14px}
 .rev-line{font-size:14px;padding:3px 0}
 .rev-line.ok{color:var(--ok)}
 .rev-line.ko{color:var(--ko)}
+.rev-line.missed{color:var(--warn);font-weight:600}
 
 /* ---- admin ---- */
 .admin-opt{display:flex;gap:10px;align-items:center;padding:8px 12px;border:1px solid var(--line);

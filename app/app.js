@@ -154,12 +154,22 @@ function validateAnswer(timeout=false){
   const hasKey = it.correctSet!=null;
   const correct = new Set(it.correctSet||[]);
   const picked = new Set(chosen);
+  let missedCount=0, wrongCount=0;
   opts.forEach((el,i)=>{
     el.disabled=true;
     el.classList.remove("sel");
     if(!hasKey){ if(picked.has(i)) el.classList.add("sel"); return; }
-    if(correct.has(i)) el.classList.add("correct");            // toutes les bonnes en vert
-    if(picked.has(i) && !correct.has(i)) el.classList.add("wrong"); // coché à tort en rouge
+    const isCorrect=correct.has(i), isPicked=picked.has(i);
+    if(isCorrect && isPicked){                                   // bonne réponse bien cochée -> vert
+      el.classList.add("correct");
+      el.insertAdjacentHTML("beforeend",'<span class="opt-tag ok">✓ bonne réponse</span>');
+    } else if(isCorrect && !isPicked){                           // bonne réponse OUBLIÉE -> ambré distinct
+      el.classList.add("missed"); missedCount++;
+      el.insertAdjacentHTML("beforeend",'<span class="opt-tag missed">réponse oubliée</span>');
+    } else if(!isCorrect && isPicked){                           // cochée à tort -> rouge
+      el.classList.add("wrong"); wrongCount++;
+      el.insertAdjacentHTML("beforeend",'<span class="opt-tag ko">✗ à tort</span>');
+    }
   });
 
   // correction affichée
@@ -167,8 +177,16 @@ function validateAnswer(timeout=false){
   const goodLetters = hasKey ? it.correctSet.map(p=>LETTERS[p]).join(", ") : "?";
   const ok = hasKey && sameSet(chosen, it.correctSet);
   let msg = `<b>Bonne(s) réponse(s) : ${goodLetters}.</b>`;
-  if(hasKey) msg += ok ? ' <span style="color:var(--ok)">✓ Réponse exacte.</span>'
-                       : ' <span style="color:var(--ko)">✗ Sélection incomplète ou erronée.</span>';
+  if(hasKey){
+    if(ok){
+      msg += ' <span style="color:var(--ok)">✓ Réponse exacte.</span>';
+    } else {
+      const bits=[];
+      if(missedCount) bits.push(`<span style="color:var(--warn)">il manquait ${missedCount} bonne réponse${missedCount>1?"s":""} (en orange, « réponse oubliée »)</span>`);
+      if(wrongCount) bits.push(`<span style="color:var(--ko)">${wrongCount} coche${wrongCount>1?"s":""} en trop (en rouge)</span>`);
+      msg += ' <span style="color:var(--ko)">✗ Réponse incomplète ou erronée</span> — ' + bits.join(" ; ") + ".";
+    }
+  }
   if(it.ref.justification) msg += " " + escapeHtml(it.ref.justification);
   ex.innerHTML = msg;
 
@@ -212,9 +230,10 @@ function finishQuiz(){
              (it.correctSet!=null ? (exact?' <span style="color:var(--ok)">✓</span>':' <span style="color:var(--ko)">✗</span>'):'')+`</div>`;
     it.opts.forEach((txt,pos)=>{
       let cls="rev-line", tag="";
-      if(correct.has(pos)){ cls+=" ok"; tag=" ✓ bonne réponse"; }
-      if(chosen.has(pos) && !correct.has(pos)){ cls+=" ko"; tag=" ✗ ta réponse"; }
-      else if(chosen.has(pos) && correct.has(pos)){ tag=" ✓ (cochée)"; }
+      const isC=correct.has(pos), isP=chosen.has(pos);
+      if(isC && isP){ cls+=" ok"; tag=" ✓ bonne réponse (cochée)"; }
+      else if(isC && !isP){ cls+=" missed"; tag=" ● réponse oubliée"; }
+      else if(!isC && isP){ cls+=" ko"; tag=" ✗ ta réponse (à tort)"; }
       html+=`<div class="${cls}">${LETTERS[pos]}. ${escapeHtml(txt)}${tag}</div>`;
     });
     if(!(quiz.answers[i]||[]).length) html+=`<div class="rev-line ko">✗ Aucune réponse (temps écoulé)</div>`;
